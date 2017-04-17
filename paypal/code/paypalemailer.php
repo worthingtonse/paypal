@@ -199,11 +199,11 @@ if($format == "jpgs"){
 	
 	$files_to_zip = array();
 	array_push($files_to_zip,  "../orders/" . $folderName . DIRECTORY_SEPARATOR . $filename);
-	$result = create_zip($fileNames, "../orders/" . $folderName . DIRECTORY_SEPARATOR . $_POST["last_name"]. $totalCoins.'cc.zip');
+	$result = create_zip($fileNames, "../orders/" . $folderName . DIRECTORY_SEPARATOR .  $totalCoins.'cc.zip');
 	
 
 	
-	$zipLink = "https://CloudCoinConsortium.com/paypal/orders/" .  $folderName. DIRECTORY_SEPARATOR . $_POST["last_name"]. $totalCoins.'cc.zip';
+	$zipLink = "https://CloudCoinConsortium.com/paypal/orders/" .  $folderName. DIRECTORY_SEPARATOR .  $totalCoins.'cc.zip';
 	$links = "<a href='".$zipLink."' download>". $zipLink."</a>";
 	
 	//$message2 = "You need to download the CloudCoins above. You may need to right-click them and Save Image As.";
@@ -225,8 +225,8 @@ if($format == "jpgs"){
 	//https://CloudCoinConsortium.com/paypal/orders/" . $folderName. DIRECTORY_SEPARATOR . $filename ."</a>";
 	$files_to_zip = array();
 	array_push($files_to_zip,  "../orders/" . $folderName . DIRECTORY_SEPARATOR . $filename);
-	$result = create_zip($files_to_zip, "../orders/" . $folderName . DIRECTORY_SEPARATOR . $_POST["last_name"]. $totalCoins.'cc.zip');
-	$zipLink = "https://CloudCoinConsortium.com/paypal/orders/" .  $folderName. DIRECTORY_SEPARATOR . $_POST["last_name"]. $totalCoins.'cc.zip';
+	$result = create_zip($files_to_zip, "../orders/" . $folderName . DIRECTORY_SEPARATOR .  $totalCoins.'cc.zip');
+	$zipLink = "https://CloudCoinConsortium.com/paypal/orders/" .  $folderName. DIRECTORY_SEPARATOR .  $totalCoins.'cc.zip';
 	$links = "<a href='".$zipLink."' download>". $zipLink."</a>";
 	
 	
