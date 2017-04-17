@@ -172,7 +172,7 @@ if ($verified) {
 	                                     \"cloudcoin\": ["; }
 		   else{ $json .= ","; }
 		 //1.Open file and add string
-		  // $file = file_get_contents( "../orders/" . $folderName . DIRECTORY_SEPARATOR . $fileNames[$j] , true);
+		   $file = file_get_contents( "../orders/" . $folderName . DIRECTORY_SEPARATOR . $fileNames[$j] , true);
 		   $pos1 = strposX($file, "{", 2);
 		   $pos2 = strpos( $file, "}") + 1;
 		   $oneCoin = substr( $file, $pos1, $pos2-$pos1);
