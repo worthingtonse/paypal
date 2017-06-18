@@ -32,14 +32,18 @@ yoshi/buy.php and yoshi/paypal/code/paypalemailer.php has some code designated t
 ##### buy.php
 
 [sandbox]
-	<form action="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&business=sean-facilitator@worthington.net" method="post" target="_top">
-        <input type="hidden" name="notify_url" value="https://cloudcoinconsortium.com/yoshi/paypal/code/paypalemailer.php" />
-        <input type="hidden" name="return" value="https://cloudcoinconsortium.com/yoshi/buy.php" />  <!--this is the return URL after purchase */
-
+```
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&business=sean-facilitator@worthington.net" method="post" target="_top">
+<input type="hidden" name="notify_url" value="https://cloudcoinconsortium.com/yoshi/paypal/code/paypalemailer.php" />
+<input type="hidden" name="return" value="https://cloudcoinconsortium.com/yoshi/buy.php" />  <!--this is the return URL after purchase */
+```
 [live]
-	<form action="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=[Sean's Paypal Business Account Email]" method="post" target="_top">
-        <input type="hidden" name="notify_url" value="https://cloudcoinconsortium.com/paypal/code/paypalemailer.php" />
-        <input type="hidden" name="return" value="https://cloudcoinconsortium.com/buy.php" />   <!--this is the return URL after purchase. change if necessary. */
+```
+<form action="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=[Sean's Paypal Business Account Email]" method="post" target="_top">
+<input type="hidden" name="notify_url" value="https://cloudcoinconsortium.com/paypal/code/paypalemailer.php" />
+<input type="hidden" name="return" value="https://cloudcoinconsortium.com/buy.php" />   <!--this is the return URL after purchase. change if necessary. */
+```
+
 [Sean's Paypal Business Account Email] should be replaced with the email address.
 
 
