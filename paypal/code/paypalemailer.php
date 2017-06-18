@@ -2,9 +2,11 @@
 
 require('PaypalIPN.php');
 
-$debug = true;
+$debug = false;
+$logemail = "noda.yoshikazu@gmail.com";
 
 
+//
 function strposX($haystack, $needle, $number){
     if($number == '1'){
         return strpos($haystack, $needle);
@@ -50,23 +52,22 @@ function create_zip($files , $destination ) {
 			$path_parts = pathinfo( $valid_files[$i] );
 			$zip->addFile( $valid_files[$i], $path_parts['basename'] );
 			error_log('Adding file ' . $path_parts['basename'] );
-			error_log('The zip archive contains ', $zip->numFiles, ' files with a status of ' ,$zip->status);
+			error_log('The zip archive contains '. $zip->numFiles. ' files with a status of ' . $zip->status);
 
 		}
 		//debug
 		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
 		//close the zip -- done!
 		$zip->close();
-		error_log('Closing zip' );
+		error_log('Closing zip');
 		//check to make sure the file exists
 		return file_exists($destination);
 	}
 	else {
-        error_log('There were no valid files' );
+        error_log('There were no valid files');
         return false;
     }
 }
-
 
 
 // Set this to true to use the sandbox endpoint during testing:
@@ -74,6 +75,9 @@ $enable_sandbox = true;
 
 // Use this to specify all of the email addresses that you have attached to paypal:
 $my_email_addresses = array("cloudcoin@Protonmail.com", "sean.worthington@gmail.com", "sean@worthington.net");
+if ($enable_sandbox)
+    array_push($my_email_addresses, "sean-facilitator@worthington.net");
+    
 
 // Set this to true to send a confirmation email:
 $send_confirmation_email = true;
@@ -101,9 +105,7 @@ if ($enable_sandbox) {
     echo "Using sandbox";
 }
 
-$verified = true;  // for debuging
-if (!$debug)
-    $verified = $ipn->verifyIPN();
+$verified = $ipn->verifyIPN();
 
 $data_text = "";
 foreach ($_POST as $key => $value) {
@@ -138,26 +140,33 @@ $Wanted1s = 0;
 $Wanted5s = 0;
 $Wanted25s = 0;
 $Wanted100s = 0;
-$Wanted250s = $quantity;
+$Wanted250s = $_POST["quantity"];
 $links = "";
 $totalCoins = 0;
 
+/* Sandbox _POST valus
+{"mc_gross": "2.75","protection_eligibility":"Eligible","address_status":"confirmed","payer_id":"S99XW6D4TL3PC","address_street":"Nishi 4-chome, Kita 55-jo, Kita-ku","payment_date":"17:12:17 Jun 17, 2017 PDT","payment_status":"Completed","charset":"windows-1252","address_zip":"150-0002","first_name":"Sean","mc_fee":"0.41","address_country_code":"JP","address_name":"Worthington Sean","notify_version":"3.8","custom":"","payer_status":"unverified","business":"sean-facilitator@worthington.net","address_country":"Japan","address_city":"Shibuya-ku","quantity":"1","verify_sign":"AjNG4H.j9XP5JDmRSY54-UnKMFtBAqmXve0WrQpFDobbZlJJIOqQHNkr","payer_email":"noda.yoshikazu@gmail.com","txn_id":"6X3468117U763282L","payment_type":"instant","last_name":"Worthington","address_state":"Tokyo","receiver_email":"sean-facilitator@worthington.net","payment_fee":"0.41","receiver_id":"RTBHRUTXN6JNS","txn_type":"web_accept","item_name":"250 CloudCoin Notes in jpegs","mc_currency":"USD","item_number":"","residence_country":"JP","test_ipn":"1","transaction_subject":"","payment_gross":"2.75","ipn_track_id":"df94960cdff8c"}
+*/
+
+$where = "** 1";
 
 if ($verified) {
-    // Verified 
+    // Verified
+    $where .= "** 2";
     $paypal_ipn_status = "RECEIVER EMAIL MISMATCH";
+
     if ($receiver_email_found) {
         $paypal_ipn_status = "Completed Successfully";
         $Wanted250s = $quantity;
 		//error_log('PayPal: 1s ' . $Wanted1s." 5s ". $Wanted5s .", 25s ". $Wanted25s .", 100s ". $Wanted100s .", 250S ". $Wanted250s );
         //Get Folder name from payer_id and payment_date
         $folderName = $year.".".$month.".".$day.".".$hour.".".$minute.".".$second.".".$_POST["payer_id"];
-        if ($debug)
-            echo $folderName;
+        // Ok upto here
+
         if (!@mkdir("../orders/" . $folderName, 0777)) {
             $error = error_get_last();
-            echo $error['message'];
-            exit(1);
+            $where .= $error['message'];
+            //exit(1);
         }
         if (strpos($item_name, 'jp') !== false) { 
             $format = "jpgs";
@@ -166,18 +175,22 @@ if ($verified) {
         else {
             error_log( "Format is stack: " . $item_name);
             $format = "stacks";
-        } //end if jpg or stack	
+        } //end if jpg or stack
+
+
         $Jpeglinks = array();//Fill this with the hyperlinks that will be sent to the user
         $urls = array();
         $fileContents = array();
+        $where .= "** 3";
+        $totalCoins = intval($Wanted1s) + intval($Wanted5s)*5 + intval($Wanted25s)*25 + intval($Wanted100s)*100 + intval($Wanted250s)*250 ;	
 
 		//If they want 250
+        // For Live only
         if ( intval( $Wanted250s  ) > 0) {
             $Names250s = scandir("../bank/$format/250s", 1);
             for ($i = 0; $i < intval( $Wanted250s ); $i++) {
                 //move file to order folder
-                if (!$debug)
-                    rename("../bank/$format/250s/" . $Names250s[$i], "../orders/" . $folderName . "/" . $Names250s[$i] );
+                rename("../bank/$format/250s/" . $Names250s[$i], "../orders/" . $folderName . "/" . $Names250s[$i] );
 				if( $format == "jpgs"){
 					//error_log("pushing ../orders/" . $folderName . "/" . $Names250s[$i]);
 					//array_push($fileContents, chunk_split(base64_encode(file_get_contents("../orders/" . $folderName . "/" . $Names250s[$i]))) );
@@ -186,14 +199,16 @@ if ($verified) {
 				
             } //end for each 250 wanted
         } //end if they want 250
-        $totalCoins = intval($Wanted1s) + intval($Wanted5s)*5 + intval($Wanted25s)*25 + intval($Wanted100s)*100 + intval($Wanted250s)*250 ;	
-	
+
         //Get all file names in the orders folder
         $allFiles  = scandir("../orders/" . $folderName, 1);
         $fileNames = array_diff($allFiles , array('.', '..'));
+        if ($debug) echo("filenames" . json_encode($fileNames));
+
         $json = "";
         $linkStrings ="";
-		
+        $where .= "** 4";
+
         for ($j = 0; $j < count($fileNames); $j++) { //Minus 2 because this scandir includes .. and .  
             if ($format == "jpgs") {
                 // $linkStrings .="<a download='". $Jpeglinks[$j]. "'><img src='". $Jpeglinks[$j]. "'
@@ -225,6 +240,9 @@ if ($verified) {
 }" ;}
             }//end if format jpg or stack
         } //end for each jpg to be linked to page
+        
+        $where .= "** 5";
+
         if ($format == "jpgs"){ 
             //  $links = $linkStrings;
             //  for($k=0;$k< sizeof($linkStrings); $k++)
@@ -242,6 +260,7 @@ if ($verified) {
             //$message2 = "You need to download the CloudCoins above. You may need to right-click them and Save Image As.";
         }
         else {
+            // Stack
             $rand = rand();
             $filename = "$totalCoins.cloudcoin.$rand.stack";
             $myfile = fopen( "../orders/" .  $folderName. DIRECTORY_SEPARATOR . $filename , "w") or error_log( "Unable to open file!");
@@ -269,9 +288,11 @@ if ($verified) {
             error_log("Zip worked");
         }else{
             error_log("Zip did not work");
-        }//end if results is ture
+        }//end if results is true
     }
+    $where .= "** 6";
 }
+
 
 if ($verified) {
     //a random hash will be necessary to send mixed content
@@ -279,7 +300,8 @@ if ($verified) {
     // carriage return type (RFC)
     $eol = "\r\n";
 }
-elseif ($enable_sandbox) {
+
+if ($enable_sandbox) {
     if ($_POST["test_ipn"] != 1) {
         $paypal_ipn_status = "RECEIVED FROM LIVE WHILE SANDBOXED";
     }
@@ -317,10 +339,13 @@ if ($save_log_file) {
         file_put_contents($dated_log_file_dir . "/" . $test_text . "paypal_ipn_" . $date . ".txt", "paypal_ipn_status = " . $paypal_ipn_status . "\r\n" . "paypal_ipn_date = " . $timestamp . "\r\n" . $data_text . "\r\n", FILE_APPEND);
     }
 }
-	
+
+/*
+ * If ok
+ */
 if ($verified && $send_confirmation_email) {
-// the message
-$email_body = "
+
+    $email_body = "
 <!doctype html>
 <html >
   <body style='background-color:#338FFF;font-family:Helvetica, Arial, sans-serif;'>
@@ -394,14 +419,12 @@ $email_body = "
       }
       }//end for each file
     */
-    if ($debug) {
-        echo "Sending email to ". $confirmation_email_address;
+    if ($debug)
         echo $body;
-    }
 	mail($confirmation_email_address, $email_subject, $body, $headers);
 
     // Reply with an empty 200 response to indicate to paypal the IPN was received correctly
 }
-header("HTTP/1.1 200 OK");
+//header("HTTP/1.1 200 OK");
 
 ?>

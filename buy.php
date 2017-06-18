@@ -160,7 +160,8 @@ a.async=true;a.type=&quot;text/javascript&quot;;b.parentNode.insertBefore(a,b)},
             <input type="hidden" name="cmd" value="_s-xclick" />  Sandbox is not working when these are included
             <input type="hidden" name="hosted_button_id" value="BRV55KB69GG44" /> Sandbox is not working when these are included
             -->
-            <input type="hidden" name="return" value="https://cloudcoinconsortium.com/yoshi/paypalemailer.php" />
+            <input type="hidden" name="notify_url" value="https://cloudcoinconsortium.com/yoshi/paypal/code/paypalemailer.php" />
+            <input type="hidden" name="return" value="https://cloudcoinconsortium.com/yoshi/buy.php" />      
             <input type="image" src="http://cloudcoinconsortium.com/img/button_buy-jpegs.png" name="submit"
                          alt="PayPal - The safer, easier way to pay online!" /> 
             <img alt="PayPal" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
@@ -172,7 +173,8 @@ a.async=true;a.type=&quot;text/javascript&quot;;b.parentNode.insertBefore(a,b)},
             <input type="hidden" name="cmd" value="_s-xclick" /> Sandbox is not working when these are included
             <input type="hidden" name="hosted_button_id" value="6CXQ9ERJ3AWHA" /> Sandbox is not working when these are included
             -->
-            <input type="hidden" name="return" value="https://cloudcoinconsortium.com/yoshi/paypalemailer.php" /> 
+            <input type="hidden" name="notify_url" value="https://cloudcoinconsortium.com/yoshi/paypal/code/paypalemailer.php" />
+            <input type="hidden" name="return" value="https://cloudcoinconsortium.com/yoshi/buy.php" />      
             <input type="image" src="http://cloudcoinconsortium.com/img/button_buy-stack.png" name="submit"
                      alt="PayPal - The safer, easier way to pay online!" /> 
             <img alt="" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
